@@ -537,21 +537,39 @@
             showToast("項目を削除しました");
         }
 
-        // --- 全体合計を計算する関数 ---
+        // --- データ取得ロジック（修正済） ---
         function getVal(y, m, id) {
             while(m <= 0) { m += 12; y--; }
             return (db[y] && db[y][m] && db[y][m][id]) ? db[y][m][id] : 0;
         }
 
+        // サイクルを考慮した合計値の計算
         function getTotalVal(y, m) {
             while(m <= 0) { m += 12; y--; }
             let total = 0;
             appSettings.categories.forEach(cat => {
-                if (db[y] && db[y][m] && db[y][m][cat.id]) {
+                // その月が該当項目の請求月に当たるか（データが存在するか）をチェック
+                if (db[y] && db[y][m] && db[y][m][cat.id] !== undefined && db[y][m][cat.id] > 0) {
                     total += db[y][m][cat.id];
                 }
             });
             return total;
+        }
+        
+        // 直近の「請求があった月」を遡って探し、その月の合計を返す関数
+        function getPrevTotalVal(y, m) {
+            let searchY = y;
+            let searchM = m - 1;
+            while(searchM <= 0) { searchM += 12; searchY--; }
+            
+            // 過去3ヶ月分遡って、何らかのデータが存在する月を「前回」とする
+            for(let i=0; i<3; i++) {
+                 let t = getTotalVal(searchY, searchM);
+                 if (t > 0) return t;
+                 searchM--;
+                 while(searchM <= 0) { searchM += 12; searchY--; }
+            }
+            return 0; // 見つからなかった場合
         }
 
         // --- レポート・詳細分析ロジック ---
@@ -560,7 +578,7 @@
             let pct = Math.round((diff / baseVal) * 100);
             let abs = Math.abs(diff).toLocaleString();
             if (diff > 0) return { html: '<span class="val val-up">+' + pct + '% (+' + abs + '円)</span>', rawPct: pct, rawDiff: diff };
-            if (diff < 0) return { html: '<span class="val val-down">' + pct + '% (-' + abs + '円)</span>', rawPct: Math.abs(pct), rawDiff: diff };
+            if (diff < 0) return { html: '<span class="val val-down">' + Math.abs(pct) + '% (-' + abs + '円)</span>', rawPct: pct, rawDiff: diff };
             return { html: '<span class="val val-neutral">±0%</span>', rawPct: 0, rawDiff: 0 };
         }
 
@@ -579,10 +597,13 @@
             
             let hasData = false;
             let currentTotal = 0;
+            // 今月の請求がある項目だけの合計を算出
             if (data) {
                 appSettings.categories.forEach(cat => {
-                    currentTotal += (data[cat.id] || 0);
-                    if ((data[cat.id] || 0) > 0) hasData = true;
+                    if (data[cat.id] && data[cat.id] > 0) {
+                        currentTotal += data[cat.id];
+                        hasData = true;
+                    }
                 });
             }
             if (!hasData) { card.style.display = 'none'; return; }
@@ -592,41 +613,68 @@
             let overallColor = 'var(--border)';
             let listHTML = '';
 
-            let pMonth = currentMonth - 1, pYear = currentYear;
-            if (pMonth === 0) { pMonth = 12; pYear--; }
-
-            if (db[pYear] && db[pYear][pMonth]) {
-                let prevTotal = getTotalVal(currentYear, currentMonth - 1);
-                
-                if (prevTotal > 0) {
-                    let res = fmt(currentTotal - prevTotal, prevTotal);
-                    let absDiff = Math.abs(res.rawDiff);
-                    if (res.rawDiff >= 2000) {
-                        summaryStr = `📈 <strong>変動費の総額が大きく増加しています（前月比 +${absDiff.toLocaleString()}円）。</strong><br>季節要因や特定の項目の使いすぎがないか確認してみましょう。`;
-                        overallColor = 'var(--danger)';
-                    } else if (res.rawDiff >= 500) {
-                        summaryStr = `🔺 <strong>前月より総額が ${absDiff.toLocaleString()}円増加しています。</strong><br>少し意識して引き締めるだけで、元の水準に戻せる範囲です。`;
-                        overallColor = 'var(--accent-secondary)';
-                    } else if (res.rawDiff <= -2000) {
-                        summaryStr = `🎉 <strong>素晴らしい！前月より大幅なコストダウン（-${absDiff.toLocaleString()}円）に成功しています！</strong><br>節約の努力がはっきりと数字に表れていますね。`;
-                        overallColor = 'var(--accent-primary)';
-                    } else if (res.rawDiff <= -500) {
-                        summaryStr = `💡 <strong>前月より総額が ${absDiff.toLocaleString()}円抑えられています。</strong><br>日々のちょっとした節約の意識が結果に出ています👍`;
-                        overallColor = 'var(--accent-primary)';
-                    } else {
-                        summaryStr = `✅ <strong>先月との総額の変動は小さく、非常に安定したペースをキープできています。</strong>`;
-                    }
-                    
-                    let resHtml = res.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>');
-                    listHTML += `<div class="metric-row clickable" style="background: rgba(255,255,255,0.02); margin-bottom: 8px;" onclick="openDetailModal('total')">
-                        <span class="label"><i class="fa-solid fa-chart-pie"></i>全体の先月比</span>
-                        <span style="display:flex; align-items:center; gap:4px;">${resHtml}</span>
-                    </div>`;
+            // 直近で請求があった月の合計を算出（サイクルが異なる項目を考慮）
+            let prevTotal = 0;
+            let searchM = currentMonth - 1;
+            let searchY = currentYear;
+            while(searchM <= 0) { searchM += 12; searchY--; }
+            
+            // 過去に遡って、今月と「同じ組み合わせの項目」が請求された月を探す
+            let activeCats = appSettings.categories.filter(c => data[c.id] > 0).map(c => c.id);
+            for(let i=0; i<6; i++) { // 最大半年遡る
+                let match = true;
+                let tempTotal = 0;
+                let prevData = db[searchY] && db[searchY][searchM];
+                if (prevData) {
+                    activeCats.forEach(id => {
+                        if(!prevData[id] || prevData[id] <= 0) match = false;
+                        else tempTotal += prevData[id];
+                    });
+                    if (match) { prevTotal = tempTotal; break; }
                 }
+                searchM--;
+                while(searchM <= 0) { searchM += 12; searchY--; }
+            }
+
+            if (prevTotal > 0) {
+                let res = fmt(currentTotal - prevTotal, prevTotal);
+                let absDiff = Math.abs(res.rawDiff);
+                if (res.rawDiff >= 2000) {
+                    summaryStr = `📈 <strong>同条件の前回より総額が大きく増加しています（+${absDiff.toLocaleString()}円）。</strong><br>季節要因や特定の項目の使いすぎがないか確認してみましょう。`;
+                    overallColor = 'var(--danger)';
+                } else if (res.rawDiff >= 500) {
+                    summaryStr = `🔺 <strong>同条件の前回より総額が ${absDiff.toLocaleString()}円増加しています。</strong><br>少し意識して引き締めるだけで、元の水準に戻せる範囲です。`;
+                    overallColor = 'var(--accent-secondary)';
+                } else if (res.rawDiff <= -2000) {
+                    summaryStr = `🎉 <strong>素晴らしい！同条件の前回より大幅なコストダウン（-${absDiff.toLocaleString()}円）に成功しています！</strong><br>節約の努力がはっきりと数字に表れていますね。`;
+                    overallColor = 'var(--accent-primary)';
+                } else if (res.rawDiff <= -500) {
+                    summaryStr = `💡 <strong>同条件の前回より総額が ${absDiff.toLocaleString()}円抑えられています。</strong><br>日々のちょっとした節約の意識が結果に出ています👍`;
+                    overallColor = 'var(--accent-primary)';
+                } else {
+                    summaryStr = `✅ <strong>同条件の前回との総額の変動は小さく、非常に安定したペースをキープできています。</strong>`;
+                }
+                
+                let resHtml = res.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>');
+                listHTML += `<div class="metric-row clickable" style="background: rgba(255,255,255,0.02); margin-bottom: 8px;" onclick="openDetailModal('total')">
+                    <span class="label"><i class="fa-solid fa-chart-pie"></i>全体の同条件・前回比</span>
+                    <span style="display:flex; align-items:center; gap:4px;">${resHtml}</span>
+                </div>`;
             }
             
             let yoyHTML = '<span class="val val-nodata">-- <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>';
-            let yoyTotal = getTotalVal(currentYear - 1, currentMonth);
+            // 前年の「同条件（同じ項目が請求されている）」月の合計を算出
+            let yoyTotal = 0;
+            let yoyData = db[currentYear - 1] && db[currentYear - 1][currentMonth];
+            if (yoyData) {
+                let match = true;
+                activeCats.forEach(id => {
+                    if(!yoyData[id] || yoyData[id] <= 0) match = false;
+                    else yoyTotal += yoyData[id];
+                });
+                if (!match) yoyTotal = 0;
+            }
+
             if (yoyTotal > 0) {
                 let yoyRes = fmt(currentTotal - yoyTotal, yoyTotal);
                 yoyHTML = yoyRes.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>');
@@ -658,6 +706,8 @@
                     } else if (r.rawDiff < -500 && r.rawPct <= -15) {
                         detailAlerts.push(`<li>🌟 <i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i> <strong>${cat.name}</strong> が前回から <strong>-${Math.abs(r.rawDiff).toLocaleString()}円</strong> 抑えられています！👏</li>`);
                     }
+                } else if (!cVal) {
+                    // データがない場合は「--」にする（水道代の請求がない月など）
                 }
                 
                 listHTML += `
@@ -687,10 +737,46 @@
                 titleColor = 'var(--text-main)';
                 titleName = '全体の総額';
                 
-                valCurrent = getTotalVal(currentYear, currentMonth);
-                valPrev = getTotalVal(currentYear, currentMonth - 1);
-                prevLabel = `前回 (${currentMonth - 1 <= 0 ? currentMonth - 1 + 12 : currentMonth - 1}月) 比`;
-                valYoY = getTotalVal(currentYear - 1, currentMonth);
+                // サイクル考慮済みの全体計算
+                valCurrent = 0;
+                let activeCats = [];
+                if (db[currentYear] && db[currentYear][currentMonth]) {
+                    appSettings.categories.forEach(cat => {
+                        if (db[currentYear][currentMonth][cat.id] > 0) {
+                            valCurrent += db[currentYear][currentMonth][cat.id];
+                            activeCats.push(cat.id);
+                        }
+                    });
+                }
+                
+                valPrev = 0;
+                let searchM = currentMonth - 1, searchY = currentYear;
+                while(searchM <= 0) { searchM += 12; searchY--; }
+                for(let i=0; i<6; i++) {
+                    let match = true; let tempTotal = 0;
+                    let prevData = db[searchY] && db[searchY][searchM];
+                    if (prevData) {
+                        activeCats.forEach(id => {
+                            if(!prevData[id] || prevData[id] <= 0) match = false;
+                            else tempTotal += prevData[id];
+                        });
+                        if (match) { valPrev = tempTotal; break; }
+                    }
+                    searchM--;
+                    while(searchM <= 0) { searchM += 12; searchY--; }
+                }
+                prevLabel = `同条件の前回比`;
+                
+                valYoY = 0;
+                let yoyData = db[currentYear - 1] && db[currentYear - 1][currentMonth];
+                if (yoyData) {
+                    let match = true;
+                    activeCats.forEach(id => {
+                        if(!yoyData[id] || yoyData[id] <= 0) match = false;
+                        else valYoY += yoyData[id];
+                    });
+                    if (!match) valYoY = 0;
+                }
                 
                 annualTotal = 0;
                 for(let m=1; m<=currentMonth; m++) annualTotal += getTotalVal(currentYear, m);
@@ -698,16 +784,38 @@
                 annualTotalYoy = 0;
                 for(let m=1; m<=currentMonth; m++) annualTotalYoy += getTotalVal(currentYear - 1, m);
                 
-                for(let i=0; i<3; i++) {
-                    let v = getTotalVal(currentYear, currentMonth - i);
-                    if(v > 0) { sum3m += v; count3m++; }
+                // 直近3回の「同条件の」合計を探す
+                searchM = currentMonth; searchY = currentYear;
+                for(let i=0; i<12 && count3m<3; i++) {
+                    let match = true; let tempTotal = 0;
+                    let pastData = db[searchY] && db[searchY][searchM];
+                    if (pastData) {
+                        activeCats.forEach(id => {
+                            if(!pastData[id] || pastData[id] <= 0) match = false;
+                            else tempTotal += pastData[id];
+                        });
+                        if (match) { sum3m += tempTotal; count3m++; }
+                    }
+                    searchM--;
+                    while(searchM <= 0) { searchM += 12; searchY--; }
                 }
                 
-                for(let i=0; i<3; i++) {
-                    let v = getTotalVal(currentYear - 1, currentMonth - i);
-                    if(v > 0) { sum3mYoy += v; count3mYoy++; }
+                searchM = currentMonth; searchY = currentYear - 1;
+                for(let i=0; i<12 && count3mYoy<3; i++) {
+                    let match = true; let tempTotal = 0;
+                    let pastData = db[searchY] && db[searchY][searchM];
+                    if (pastData) {
+                        activeCats.forEach(id => {
+                            if(!pastData[id] || pastData[id] <= 0) match = false;
+                            else tempTotal += pastData[id];
+                        });
+                        if (match) { sum3mYoy += tempTotal; count3mYoy++; }
+                    }
+                    searchM--;
+                    while(searchM <= 0) { searchM += 12; searchY--; }
                 }
-                avgLabel = '直近3ヶ月の平均推移';
+                avgLabel = '直近3回の平均推移（同条件）';
+                
             } else {
                 const cat = appSettings.categories.find(c => c.id === catId);
                 if(!cat) return;
