@@ -40,20 +40,35 @@
         .month-selector-container::-webkit-scrollbar { display: none; }
         .month-tab { display: inline-block; padding: 8px 16px; background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; margin-right: 8px; font-size: 14px; font-weight: 600; color: var(--text-sub); cursor: pointer; }
         .month-tab.active { background-color: var(--accent-primary); color: var(--bg-main); border-color: var(--accent-primary); }
+        
         .advisor-card { background-color: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: none; }
-        .advisor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .advisor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
         .advisor-header-left { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+        
+        .actual-total-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .actual-total-label { font-size: 13px; color: var(--text-sub); margin-bottom: 8px; font-weight: 600; }
+        .actual-total-val { font-size: 36px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
+        .actual-total-diff { font-size: 14px; font-weight: 700; margin-top: 4px; }
+        
+        .actual-breakdown { display: flex; gap: 12px; margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 16px; }
+        .actual-breakdown-item { flex: 1; text-align: left; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .actual-breakdown-label { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600;}
+        .actual-breakdown-val { font-size: 18px; font-weight: 700; color: var(--text-main); }
+
         .advisor-summary { font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
-        .advisor-summary ul { margin-top: 8px; padding-left: 0; list-style: none; }
-        .advisor-summary li { margin-bottom: 8px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+        .advisor-summary ul { margin-top: 12px; padding-left: 0; list-style: none; }
+        .advisor-summary li { margin-bottom: 8px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--text-sub); line-height: 1.5; border-left: 3px solid transparent; }
+        .advisor-summary li.alert-danger { border-left-color: var(--danger); }
+        .advisor-summary li.alert-success { border-left-color: var(--accent-primary); }
         .advisor-summary strong { color: var(--text-main); }
-        .metrics-list { display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed var(--border); padding-top: 8px; }
-        .metric-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-sub); padding: 10px 8px; border-radius: 8px; transition: 0.2s; }
-        .metric-row.clickable { cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,0.01); }
+        
+        .metrics-list { display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed var(--border); padding-top: 12px; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-sub); padding: 12px 10px; border-radius: 8px; transition: 0.2s; }
+        .metric-row.clickable { cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,0.02); }
         .metric-row.clickable:hover, .metric-row.clickable:active { background: rgba(255,255,255,0.08); border-color: var(--border); }
-        .metric-row .label i { width: 20px; text-align: center; margin-right: 4px; }
+        .metric-row .label { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main); }
+        .metric-row .label i { width: 20px; text-align: center; }
         .metric-row .val { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 4px; }
-        .metric-divider { height: 1px; background-color: var(--border); margin: 4px 0; border: none; }
         .val-up { color: var(--danger); }
         .val-down { color: var(--accent-primary); }
         .val-neutral { color: var(--text-main); }
@@ -105,10 +120,10 @@
         .detail-main-val { font-size: 28px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
         
         .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; margin-bottom: 8px; }
-        .detail-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; }
-        .detail-item span { display: block; font-size: 11px; color: var(--text-sub); margin-bottom: 4px; line-height: 1.3; }
-        .detail-item strong { font-size: 16px; display: block; margin-bottom: 2px; }
-        .detail-diff { font-size: 11px; font-weight: 600; }
+        .detail-item { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05); }
+        .detail-item span { display: block; font-size: 11px; color: var(--text-sub); margin-bottom: 6px; line-height: 1.3; font-weight: 600; }
+        .detail-item strong { font-size: 16px; display: block; margin-bottom: 2px; color: var(--text-main); }
+        .detail-diff { font-size: 11px; font-weight: 700; }
         
         .btn-action { padding: 6px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
         .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
@@ -153,14 +168,35 @@
     <div class="advisor-card" id="advisor-card">
         <div class="advisor-header">
             <div class="advisor-header-left">
-                <i class="fa-solid fa-chart-line" style="color:var(--accent-primary);"></i> 自動分析レポート
+                <i class="fa-solid fa-chart-line" style="color:var(--accent-primary);"></i> 当月レポート
             </div>
         </div>
+        
+        <div class="actual-total-box">
+            <div class="actual-total-label"><span id="actual-month-label"></span>の 実績総額</div>
+            <div class="actual-total-val">
+                <span id="actual-total-val">¥0</span>
+            </div>
+            <div id="actual-total-diff" class="actual-total-diff"></div>
+            
+            <div class="actual-breakdown">
+                <div class="actual-breakdown-item">
+                    <div class="actual-breakdown-label">毎月項目の計</div>
+                    <div class="actual-breakdown-val" id="actual-monthly-total">¥0</div>
+                </div>
+                <div class="actual-breakdown-item">
+                    <div class="actual-breakdown-label">毎月以外の計</div>
+                    <div class="actual-breakdown-val" id="actual-other-total">¥0</div>
+                </div>
+            </div>
+        </div>
+        
         <div class="advisor-summary" id="advisor-summary"></div>
         
         <div style="text-align: center; font-size: 11px; color: var(--text-sub); margin-top: 16px; margin-bottom: 8px; font-weight: 700;">
             <i class="fa-solid fa-hand-pointer"></i> 各項目をタップすると詳細分析が開きます
         </div>
+        
         <div class="metrics-list" id="metrics-list-container"></div>
     </div>
     
@@ -537,42 +573,22 @@
             showToast("項目を削除しました");
         }
 
-        // --- データ取得ロジック（修正済） ---
         function getVal(y, m, id) {
             while(m <= 0) { m += 12; y--; }
             return (db[y] && db[y][m] && db[y][m][id]) ? db[y][m][id] : 0;
         }
 
-        // サイクルを考慮した合計値の計算
         function getTotalVal(y, m) {
             while(m <= 0) { m += 12; y--; }
             let total = 0;
             appSettings.categories.forEach(cat => {
-                // その月が該当項目の請求月に当たるか（データが存在するか）をチェック
                 if (db[y] && db[y][m] && db[y][m][cat.id] !== undefined && db[y][m][cat.id] > 0) {
                     total += db[y][m][cat.id];
                 }
             });
             return total;
         }
-        
-        // 直近の「請求があった月」を遡って探し、その月の合計を返す関数
-        function getPrevTotalVal(y, m) {
-            let searchY = y;
-            let searchM = m - 1;
-            while(searchM <= 0) { searchM += 12; searchY--; }
-            
-            // 過去3ヶ月分遡って、何らかのデータが存在する月を「前回」とする
-            for(let i=0; i<3; i++) {
-                 let t = getTotalVal(searchY, searchM);
-                 if (t > 0) return t;
-                 searchM--;
-                 while(searchM <= 0) { searchM += 12; searchY--; }
-            }
-            return 0; // 見つからなかった場合
-        }
 
-        // --- レポート・詳細分析ロジック ---
         function fmt(diff, baseVal) {
             if (baseVal === 0) return { html: '<span class="val val-nodata">データなし</span>', rawPct: 0, rawDiff: 0 };
             let pct = Math.round((diff / baseVal) * 100);
@@ -597,96 +613,49 @@
             
             let hasData = false;
             let currentTotal = 0;
-            // 今月の請求がある項目だけの合計を算出
+            let monthlyTotal = 0;
+            let otherTotal = 0;
+            
             if (data) {
                 appSettings.categories.forEach(cat => {
                     if (data[cat.id] && data[cat.id] > 0) {
                         currentTotal += data[cat.id];
                         hasData = true;
+                        if(cat.interval == 1) {
+                            monthlyTotal += data[cat.id];
+                        } else {
+                            otherTotal += data[cat.id];
+                        }
                     }
                 });
             }
             if (!hasData) { card.style.display = 'none'; return; }
 
-            // 1. 全体の金額と傾向分析
-            let summaryStr = '';
-            let overallColor = 'var(--border)';
-            let listHTML = '';
-
-            // 直近で請求があった月の合計を算出（サイクルが異なる項目を考慮）
-            let prevTotal = 0;
-            let searchM = currentMonth - 1;
-            let searchY = currentYear;
-            while(searchM <= 0) { searchM += 12; searchY--; }
+            // --- 1. 全体実績エリアの更新 ---
+            document.getElementById('actual-month-label').innerText = `${currentYear}年${currentMonth}月`;
+            document.getElementById('actual-total-val').innerText = `¥${currentTotal.toLocaleString()}`;
             
-            // 過去に遡って、今月と「同じ組み合わせの項目」が請求された月を探す
-            let activeCats = appSettings.categories.filter(c => data[c.id] > 0).map(c => c.id);
-            for(let i=0; i<6; i++) { // 最大半年遡る
-                let match = true;
-                let tempTotal = 0;
-                let prevData = db[searchY] && db[searchY][searchM];
-                if (prevData) {
-                    activeCats.forEach(id => {
-                        if(!prevData[id] || prevData[id] <= 0) match = false;
-                        else tempTotal += prevData[id];
-                    });
-                    if (match) { prevTotal = tempTotal; break; }
-                }
-                searchM--;
-                while(searchM <= 0) { searchM += 12; searchY--; }
-            }
-
-            if (prevTotal > 0) {
-                let res = fmt(currentTotal - prevTotal, prevTotal);
-                let absDiff = Math.abs(res.rawDiff);
-                if (res.rawDiff >= 2000) {
-                    summaryStr = `📈 <strong>同条件の前回より総額が大きく増加しています（+${absDiff.toLocaleString()}円）。</strong><br>季節要因や特定の項目の使いすぎがないか確認してみましょう。`;
-                    overallColor = 'var(--danger)';
-                } else if (res.rawDiff >= 500) {
-                    summaryStr = `🔺 <strong>同条件の前回より総額が ${absDiff.toLocaleString()}円増加しています。</strong><br>少し意識して引き締めるだけで、元の水準に戻せる範囲です。`;
-                    overallColor = 'var(--accent-secondary)';
-                } else if (res.rawDiff <= -2000) {
-                    summaryStr = `🎉 <strong>素晴らしい！同条件の前回より大幅なコストダウン（-${absDiff.toLocaleString()}円）に成功しています！</strong><br>節約の努力がはっきりと数字に表れていますね。`;
-                    overallColor = 'var(--accent-primary)';
-                } else if (res.rawDiff <= -500) {
-                    summaryStr = `💡 <strong>同条件の前回より総額が ${absDiff.toLocaleString()}円抑えられています。</strong><br>日々のちょっとした節約の意識が結果に出ています👍`;
-                    overallColor = 'var(--accent-primary)';
+            let prevTotal = getTotalVal(currentYear, currentMonth - 1);
+            if(prevTotal > 0) {
+                let diff = currentTotal - prevTotal;
+                let absDiff = Math.abs(diff).toLocaleString();
+                if(diff > 0) {
+                    document.getElementById('actual-total-diff').innerHTML = `<span class="val-up">先月比: +${absDiff}円</span>`;
+                } else if(diff < 0) {
+                    document.getElementById('actual-total-diff').innerHTML = `<span class="val-down">先月比: -${absDiff}円</span>`;
                 } else {
-                    summaryStr = `✅ <strong>同条件の前回との総額の変動は小さく、非常に安定したペースをキープできています。</strong>`;
+                    document.getElementById('actual-total-diff').innerHTML = `<span class="val-neutral">先月比: ±0円</span>`;
                 }
-                
-                let resHtml = res.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>');
-                listHTML += `<div class="metric-row clickable" style="background: rgba(255,255,255,0.02); margin-bottom: 8px;" onclick="openDetailModal('total')">
-                    <span class="label"><i class="fa-solid fa-chart-pie"></i>全体の同条件・前回比</span>
-                    <span style="display:flex; align-items:center; gap:4px;">${resHtml}</span>
-                </div>`;
+            } else {
+                document.getElementById('actual-total-diff').innerHTML = '';
             }
             
-            let yoyHTML = '<span class="val val-nodata">-- <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>';
-            // 前年の「同条件（同じ項目が請求されている）」月の合計を算出
-            let yoyTotal = 0;
-            let yoyData = db[currentYear - 1] && db[currentYear - 1][currentMonth];
-            if (yoyData) {
-                let match = true;
-                activeCats.forEach(id => {
-                    if(!yoyData[id] || yoyData[id] <= 0) match = false;
-                    else yoyTotal += yoyData[id];
-                });
-                if (!match) yoyTotal = 0;
-            }
-
-            if (yoyTotal > 0) {
-                let yoyRes = fmt(currentTotal - yoyTotal, yoyTotal);
-                yoyHTML = yoyRes.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; opacity:0.5; margin-left:4px;"></i></span>');
-            }
-            listHTML += `<div class="metric-row clickable" style="background: rgba(255,255,255,0.02); margin-bottom: 12px;" onclick="openDetailModal('total')">
-                <span class="label"><i class="fa-regular fa-calendar"></i>全体の ${currentYear-1}年${currentMonth}月 比</span>
-                <span style="display:flex; align-items:center; gap:4px;">${yoyHTML}</span>
-            </div>`;
-            listHTML += '<hr class="metric-divider" style="margin-bottom: 12px;">';
+            document.getElementById('actual-monthly-total').innerText = `¥${monthlyTotal.toLocaleString()}`;
+            document.getElementById('actual-other-total').innerText = `¥${otherTotal.toLocaleString()}`;
 
 
-            // 2. 個別項目の詳細と増減コメント
+            // --- 2. 個別項目の分析リスト作成 ---
+            let listHTML = '';
             let detailAlerts = [];
             
             appSettings.categories.forEach(cat => {
@@ -702,154 +671,76 @@
                     rHtml = r.html.replace('</span>', ' <i class="fa-solid fa-chevron-right" style="font-size:10px; margin-left:4px;"></i></span>');
                     
                     if (r.rawDiff > 500 && r.rawPct >= 15) {
-                        detailAlerts.push(`<li>⚠️ <i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i> <strong>${cat.name}</strong> が前回から <strong>+${r.rawDiff.toLocaleString()}円</strong> と急増しています。</li>`);
+                        detailAlerts.push(`<li class="alert-danger"><i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i> <strong>${cat.name}</strong> が前回から <strong>+${r.rawDiff.toLocaleString()}円</strong> と急増しています。</li>`);
                     } else if (r.rawDiff < -500 && r.rawPct <= -15) {
-                        detailAlerts.push(`<li>🌟 <i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i> <strong>${cat.name}</strong> が前回から <strong>-${Math.abs(r.rawDiff).toLocaleString()}円</strong> 抑えられています！👏</li>`);
+                        detailAlerts.push(`<li class="alert-success"><i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i> <strong>${cat.name}</strong> が前回から <strong>-${Math.abs(r.rawDiff).toLocaleString()}円</strong> 抑えられています！👏</li>`);
                     }
-                } else if (!cVal) {
-                    // データがない場合は「--」にする（水道代の請求がない月など）
                 }
                 
                 listHTML += `
                     <div class="metric-row clickable" onclick="openDetailModal('${cat.id}')">
-                        <span class="label"><i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i>${cat.name}</span>
+                        <span class="label"><i class="fa-solid fa-${cat.icon}" style="color:${cat.color};"></i>
+                            <div style="display:flex; flex-direction:column;">
+                                <span>${cat.name}</span>
+                                <span style="font-size:10px; font-weight:normal; opacity:0.7;">${cat.interval===1?'毎月':'数ヶ月に1回'}</span>
+                            </div>
+                        </span>
                         ${rHtml}
                     </div>
                 `;
             });
-
+            
+            // --- 3. 分析サマリーの更新 ---
+            let summaryStr = '';
+            
+            // アラートがない場合は安定している旨を表示
             if (detailAlerts.length > 0) {
-                summaryStr += '<ul>' + detailAlerts.join('') + '</ul>';
+                summaryStr = '<ul>' + detailAlerts.join('') + '</ul>';
+            } else {
+                summaryStr = `<ul><li class="alert-success" style="border-left-color:var(--text-sub);">✅ <strong>各項目の変動は小さく、安定したペースをキープできています。</strong></li></ul>`;
             }
 
             document.getElementById('advisor-summary').innerHTML = summaryStr;
             document.getElementById('metrics-list-container').innerHTML = listHTML;
-            card.style.borderTopColor = overallColor;
             card.style.display = 'block';
         }
 
         // --- 詳細分析モーダルロジック ---
         function openDetailModal(catId) {
-            let titleIcon, titleColor, titleName, valCurrent, valPrev, prevLabel, valYoY, annualTotal, annualTotalYoy, sum3m=0, count3m=0, sum3mYoy=0, count3mYoy=0, avgLabel;
+            const cat = appSettings.categories.find(c => c.id === catId);
+            if(!cat) return;
 
-            if (catId === 'total') {
-                titleIcon = 'chart-pie';
-                titleColor = 'var(--text-main)';
-                titleName = '全体の総額';
-                
-                // サイクル考慮済みの全体計算
-                valCurrent = 0;
-                let activeCats = [];
-                if (db[currentYear] && db[currentYear][currentMonth]) {
-                    appSettings.categories.forEach(cat => {
-                        if (db[currentYear][currentMonth][cat.id] > 0) {
-                            valCurrent += db[currentYear][currentMonth][cat.id];
-                            activeCats.push(cat.id);
-                        }
-                    });
-                }
-                
-                valPrev = 0;
-                let searchM = currentMonth - 1, searchY = currentYear;
-                while(searchM <= 0) { searchM += 12; searchY--; }
-                for(let i=0; i<6; i++) {
-                    let match = true; let tempTotal = 0;
-                    let prevData = db[searchY] && db[searchY][searchM];
-                    if (prevData) {
-                        activeCats.forEach(id => {
-                            if(!prevData[id] || prevData[id] <= 0) match = false;
-                            else tempTotal += prevData[id];
-                        });
-                        if (match) { valPrev = tempTotal; break; }
-                    }
-                    searchM--;
-                    while(searchM <= 0) { searchM += 12; searchY--; }
-                }
-                prevLabel = `同条件の前回比`;
-                
-                valYoY = 0;
-                let yoyData = db[currentYear - 1] && db[currentYear - 1][currentMonth];
-                if (yoyData) {
-                    let match = true;
-                    activeCats.forEach(id => {
-                        if(!yoyData[id] || yoyData[id] <= 0) match = false;
-                        else valYoY += yoyData[id];
-                    });
-                    if (!match) valYoY = 0;
-                }
-                
-                annualTotal = 0;
-                for(let m=1; m<=currentMonth; m++) annualTotal += getTotalVal(currentYear, m);
-                
-                annualTotalYoy = 0;
-                for(let m=1; m<=currentMonth; m++) annualTotalYoy += getTotalVal(currentYear - 1, m);
-                
-                // 直近3回の「同条件の」合計を探す
-                searchM = currentMonth; searchY = currentYear;
-                for(let i=0; i<12 && count3m<3; i++) {
-                    let match = true; let tempTotal = 0;
-                    let pastData = db[searchY] && db[searchY][searchM];
-                    if (pastData) {
-                        activeCats.forEach(id => {
-                            if(!pastData[id] || pastData[id] <= 0) match = false;
-                            else tempTotal += pastData[id];
-                        });
-                        if (match) { sum3m += tempTotal; count3m++; }
-                    }
-                    searchM--;
-                    while(searchM <= 0) { searchM += 12; searchY--; }
-                }
-                
-                searchM = currentMonth; searchY = currentYear - 1;
-                for(let i=0; i<12 && count3mYoy<3; i++) {
-                    let match = true; let tempTotal = 0;
-                    let pastData = db[searchY] && db[searchY][searchM];
-                    if (pastData) {
-                        activeCats.forEach(id => {
-                            if(!pastData[id] || pastData[id] <= 0) match = false;
-                            else tempTotal += pastData[id];
-                        });
-                        if (match) { sum3mYoy += tempTotal; count3mYoy++; }
-                    }
-                    searchM--;
-                    while(searchM <= 0) { searchM += 12; searchY--; }
-                }
-                avgLabel = '直近3回の平均推移（同条件）';
-                
-            } else {
-                const cat = appSettings.categories.find(c => c.id === catId);
-                if(!cat) return;
+            let titleIcon = cat.icon;
+            let titleColor = cat.color;
+            let titleName = cat.name;
 
-                titleIcon = cat.icon;
-                titleColor = cat.color;
-                titleName = cat.name;
+            let valCurrent = getVal(currentYear, currentMonth, catId);
 
-                valCurrent = getVal(currentYear, currentMonth, catId);
+            const intv = cat.interval;
+            let valPrev = getVal(currentYear, currentMonth - intv, catId);
+            let prevLabel = `前回 (${currentMonth - intv <= 0 ? currentMonth - intv + 12 : currentMonth - intv}月) 比`;
 
-                const intv = cat.interval;
-                valPrev = getVal(currentYear, currentMonth - intv, catId);
-                prevLabel = `前回 (${currentMonth - intv <= 0 ? currentMonth - intv + 12 : currentMonth - intv}月) 比`;
+            let valYoY = getVal(currentYear - 1, currentMonth, catId);
 
-                valYoY = getVal(currentYear - 1, currentMonth, catId);
+            let annualTotal = 0;
+            for(let m=1; m<=currentMonth; m++) annualTotal += getVal(currentYear, m, catId);
 
-                annualTotal = 0;
-                for(let m=1; m<=currentMonth; m++) annualTotal += getVal(currentYear, m, catId);
+            let annualTotalYoy = 0;
+            for(let m=1; m<=currentMonth; m++) annualTotalYoy += getVal(currentYear - 1, m, catId);
 
-                annualTotalYoy = 0;
-                for(let m=1; m<=currentMonth; m++) annualTotalYoy += getVal(currentYear - 1, m, catId);
-
-                for(let i=0; i<3; i++) {
-                    let v = getVal(currentYear, currentMonth - (i * intv), catId);
-                    if(v > 0) { sum3m += v; count3m++; }
-                }
-                avgLabel = `直近${intv===1?'3ヶ月':'3回'}の平均推移`;
-
-                for(let i=0; i<3; i++) {
-                    let v = getVal(currentYear - 1, currentMonth - (i * intv), catId);
-                    if(v > 0) { sum3mYoy += v; count3mYoy++; }
-                }
+            let sum3m = 0, count3m = 0;
+            for(let i=0; i<3; i++) {
+                let v = getVal(currentYear, currentMonth - (i * intv), catId);
+                if(v > 0) { sum3m += v; count3m++; }
             }
+            let avgLabel = `直近${intv===1?'3ヶ月':'3回'}の平均推移`;
 
+            let sum3mYoy = 0, count3mYoy = 0;
+            for(let i=0; i<3; i++) {
+                let v = getVal(currentYear - 1, currentMonth - (i * intv), catId);
+                if(v > 0) { sum3mYoy += v; count3mYoy++; }
+            }
+            
             document.getElementById('detail-icon').className = `fa-solid fa-${titleIcon}`;
             document.getElementById('detail-icon').style.color = titleColor;
             document.getElementById('detail-name').innerText = titleName;
